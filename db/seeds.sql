@@ -1,13 +1,32 @@
-INSERT INTO movies (movie_name)
+INSERT INTO departments (id, name)
 VALUES 
-('The Great Gatsby'),
-('Divergent'),
-('Demon Slayer'),
-('One Piece: Flim Red');
+(1,'Engineering'),
+(2, 'Finance'),
+(3, 'Legal'),
+(4, 'Sales');
 
-INSERT INTO reviews (movie_id, review_description)
+INSERT INTO roles (id, title, department_id, salary)
 VALUES 
-(1,'He should have moved on instead of waiting for her'),
-(2, 'This movies is so good that I watch it on repeat'),
-(3,'The graphics and quality of this movie was top of the line!!'),
-(4,'Always a favorite, always will be!!');
+(1,'Sales Lead', 4, 100000),
+(2, 'Salesperson', 4, 80000),
+(3, 'Lead Enginner', 1, 150000),
+(4, 'Software Engineer', 1, 120000)
+(5,'Account Manager', 2, 160000),
+(6, 'Accountant', 2, 125000),
+(7, 'Legal Team Lead', 3, 250000),
+(8, 'Lawyer', 3, 190000);
+
+INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
+VALUES 
+(1, 'John', 'Doe', 1, NULL),
+(2, 'Ashley', 'Rodriguez', 3, NULL),
+(3,'Kunal', 'Singh',5 , NULL),
+(4, 'Sarah', 'Lourd', 7, NULL);
+
+INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
+VALUES 
+(5, 'Mike', 'Chan',2, 1),
+(6, 'Kevin', 'Tupik', 4, 2)
+(7, 'Malia', 'Brown', 6, 3),
+(8, 'Tom', 'Allen', 8, 4);
+
