@@ -1,23 +1,17 @@
-const express = require('express');
 const inquirer = require('inquirer');
 const { Pool } = require('pg');
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
+// const pool = {};
 
 const pool = new Pool(
     {
         user: 'postgres',
         password: '215242405',
         host: 'localhost',
-        database: 'employeeTracker_db'
+        database: 'tracker_db'
     },
     console.log('Connected to employeeTracker_db successfully!!')
 );
-pool.connect();
+
 
 const questions = [
     {
@@ -30,25 +24,25 @@ const questions = [
     {
         type: 'input',
         messgae: 'What is the employee first name?',
-        name: 'employee',
+        name: 'firstName',
         when: (answers) => answers.questions === 'Add Employee',
     },
     {
         type: 'input',
         messgae: 'What is the employee last name?',
-        name: 'employee',
+        name: 'lastName',
         when: (answers) => answers.questions === 'Add Employee',
     },
     {
         type: 'input',
         messgae: 'What is the employee role?',
-        name: 'employee',
+        name: 'employeeRole',
         when: (answers) => answers.questions === 'Add Employee',
     },
     {
         type: 'input',
         messgae: 'Who is the employee manager?',
-        name: 'employee',
+        name: 'employeeManager',
         when: (answers) => answers.questions === 'Add Employee',
     },
     // end of adding employee
@@ -74,21 +68,21 @@ const questions = [
     },
     {
         type: 'input',
-        messgae: 'What is the name of the role?',
-        name: 'role',
+        messgae: 'What is the tile of the role?',
+        name: 'roleTitle',
         when: (answers) => answers.questions === 'Add Role' || answers.questions === 'Update Role',
     },
     // start for role sub questions
     {
         type: 'input',
         messgae: 'What is the salary of the role?',
-        name: 'role',
+        name: 'roleSalary',
         when: (answers) => answers.questions === 'Add Role' || answers.questions === 'Update Role',
     },
     {
         type: 'input',
         messgae: 'Which department does the role belong to?',
-        name: 'role',
+        name: 'roleDepartment',
         when: (answers) => answers.questions === 'Add Role' || answers.questions === 'Update Role',
     },
     // end
@@ -97,29 +91,43 @@ const questions = [
         messgae: 'What is the name of the department?',
         name: 'department',
         when: (answers) => answers.questions === 'Add Department' || answers.questions === 'Update Employee Department',
-    }
+    },
+    {
+        type: 'input',
+        messgae: 'Input role_id number',
+        name: 'inputRoleId',
+        when: (answers) =>  answers.questions === 'Update Employee Role'|| answers.question=== 'Add Employee',
+    },
+    {
+        type: 'input',
+        messgae: 'Input employee_id number',
+        name: 'inputEmployeeId',
+        when: (answers) => answers.questions === 'Update Employee Role'|| answers.question=== 'Add Employee',
+    },
 
 
 ];
 
-function init() {
+function init(pool) {
     inquirer
         .prompt(questions)
         .then((answers) => {
+            console.log(answers)
             if (answers.questions === 'View All Employees') {
                 pool.query('SELECT * FROM employees', function (err, result) {
                     if (err) throw err;
-                    console.table(result);
-                    init();
+                    console.table(result.rows);
+                    init(pool);
                 });
 
             }
              if (answers.questions === 'Add Employee') {
                 pool.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)',
-                    [answers.employees, answers.first_name, answers.last_name, answers.role_id, answers.manager_id],
+                    [answers.firstName, answers.lastName, answers.employeeRole, answers.employeeManager],
                     function (err, result) {
                         if (err) throw err;
-                        console.table(result);
+                        console.table(result.rows);
+                        init(pool);
                     });
 
              }
@@ -132,23 +140,22 @@ function init() {
             }
             if (answers.questions === 'Add Role') {
                 pool.query('INSERT INTO roles (title, department_id, salary) VALUES (?, ?, ?)',
-                    [answers.roles, answers.title, answers.department_id,answers.salary],
+                    [answers.roleTitle, answers.roleDepartment,answers.roleSalary],
                     function (err, result) {
                         if (err) throw err;
                         console.table(result);
                     });
             }
-            // check
             if (answers.questions === 'Update Employee Role') {
-                pool.query('UPDATE INTO employee (title, department_id, salary) VALUES (?, ?, ?)',
-                    [answers.employees],
+                pool.query('UPDATE employee SET role_id=? WHERE id=? ',
+                    [answers.inputRoleId, answers.inputEmployeeId],
                     function (err, result) {
                         if (err) throw err;
                         console.table(result);
                     });
             }
             if (answers.questions === 'View All Departments') {
-                pool.query('SELECT * FROM depatments', function (err, result) {
+                pool.query('SELECT * FROM departments', function (err, result) {
                     if (err) throw err;
                     console.table(result);
                 });
@@ -173,4 +180,14 @@ function init() {
             console.log(answers);
         });
 }
-init();
+// init()
+
+pool.connect(function (err, client, done) {
+    if (err) throw err;
+    init(client)
+})
+    // .then(client => {
+    //     init(client);
+    // }).catch(err => {
+    //     console.log(err);
+    // });

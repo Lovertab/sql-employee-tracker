@@ -1,8 +1,9 @@
-DROP DATABASE IF EXISTS employeeTracker_db;
-CREATE DATABASE employeeTracker_db;
+DROP DATABASE IF EXISTS tracker_db;
+CREATE DATABASE tracker_db;
 
-\c employeeTracker_db;
-
+\c tracker_db;
+-- DROP TABLE departments CASCADE;
+-- DROP TABLE roles CASCADE;
 CREATE TABLE departments (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) UNIQUE NOT NULL
@@ -23,6 +24,6 @@ CREATE TABLE employees(
     role_id INTEGER NOT NULL,
     FOREIGN KEY (role_id) REFERENCES roles(id),
     manager_id INTEGER,
-    FOREIGN KEY (department_id) REFERENCES departments(id)
+    FOREIGN KEY (manager_id) REFERENCES employees(id)
     
 );

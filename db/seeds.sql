@@ -10,7 +10,7 @@ VALUES
 (1,'Sales Lead', 4, 100000),
 (2, 'Salesperson', 4, 80000),
 (3, 'Lead Enginner', 1, 150000),
-(4, 'Software Engineer', 1, 120000)
+(4, 'Software Engineer', 1, 120000),
 (5,'Account Manager', 2, 160000),
 (6, 'Accountant', 2, 125000),
 (7, 'Legal Team Lead', 3, 250000),
@@ -26,7 +26,7 @@ VALUES
 INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
 VALUES 
 (5, 'Mike', 'Chan',2, 1),
-(6, 'Kevin', 'Tupik', 4, 2)
+(6, 'Kevin', 'Tupik', 4, 2),
 (7, 'Malia', 'Brown', 6, 3),
 (8, 'Tom', 'Allen', 8, 4);
 
